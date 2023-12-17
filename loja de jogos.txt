@@ -1,0 +1,176 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Jogo {
+    private String nome;
+    private double preco;
+    private int quantidadeDisponivel;
+
+    public Jogo(String nome, double preco, int quantidadeDisponivel) {
+        this.nome = nome;
+        this.preco = preco;
+        this.quantidadeDisponivel = quantidadeDisponivel;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public int getQuantidadeDisponivel() {
+        return quantidadeDisponivel;
+    }
+
+    public void reduzirEstoque(int quantidade) {
+        if (quantidade <= quantidadeDisponivel) {
+            quantidadeDisponivel -= quantidade;
+        } else {
+            System.out.println("Estoque insuficiente para " + nome);
+        }
+    }
+
+    public String toString() {
+        return nome + " - R$ " + preco + " - Estoque: " + quantidadeDisponivel;
+    }
+}
+
+class LojaDeJogos {
+    public List<Jogo> jogosDisponiveis;
+    private List<Jogo> listaAlternativa;
+
+    public LojaDeJogos() {
+        this.jogosDisponiveis = new ArrayList<>();
+        this.listaAlternativa = new ArrayList<>();
+    }
+
+    public void adicionarJogo(Jogo jogo) {
+        jogosDisponiveis.add(jogo);
+    }
+
+    public void adicionarJogoAlternativo(Jogo jogo) {
+        listaAlternativa.add(jogo);
+    }
+
+    public void removerJogo(Jogo jogo) {
+        jogosDisponiveis.remove(jogo);
+    }
+
+    public void listarJogos() {
+        System.out.println("Jogos disponíveis na loja:");
+        for (Jogo jogo : jogosDisponiveis) {
+            System.out.println(jogo);
+        }
+
+    }
+
+    public double calcularPrecoTotal(List<Jogo> listaDeCompras, double desconto) {
+        double precoTotal = 0;
+        for (Jogo jogo : listaDeCompras) {
+            double precoComDesconto = jogo.getPreco() * (1 - desconto);
+            precoTotal += precoComDesconto;
+        }
+        return precoTotal;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        Jogo jogo1 = new Jogo("sifu_demo", 129.99, 10);
+        Jogo jogo2 = new Jogo("minecraft", 199.99, 5);
+        Jogo jogo3 = new Jogo("fifa_23", 159.99, 8);
+        Jogo jogo4 = new Jogo("roblox_2", 179.99, 15);
+        Jogo jogo5 = new Jogo("gta_6", 249.99, 12);
+        Jogo jogo6 = new Jogo("minecraft_2", 399.99, 11);
+
+        LojaDeJogos loja = new LojaDeJogos();
+
+        loja.adicionarJogo(jogo1);
+        loja.adicionarJogo(jogo2);
+        loja.adicionarJogo(jogo3);
+        loja.adicionarJogo(jogo4);
+        loja.adicionarJogo(jogo5);
+        loja.adicionarJogo(jogo6);
+
+        System.out.println("*--------------------------------------------*");
+        System.out.println("Bem-vindo a lojinha de jogos do japa");
+        System.out.println(" ");
+        System.out.println("Só jogo do bom,, NÃO É PIRATA!!!");
+        System.out.println("*---------------------------------------------*");
+
+        while (true) {
+            System.out.println("\nOpções do japa:");
+            System.out.println("1 - Listar de jogos");
+            System.out.println("2 - Comprar jogos");
+            System.out.println("3 - Sair");
+
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    loja.listarJogos();
+                    break;
+                case 2:
+                    List<Jogo> carrinhoDeCompras = new ArrayList<>();
+
+                    while (true) {
+                        System.out.println("Digite o nome do jogo que deseja comprar (ou 'finalizar' para concluir):");
+                        String nomeJogo = scanner.next();
+
+                        if (nomeJogo.equalsIgnoreCase("finalizar")) {
+                            break;
+                        }
+
+                        for (Jogo jogo : loja.jogosDisponiveis) {
+                            if (jogo.getNome().equalsIgnoreCase(nomeJogo) && jogo.getQuantidadeDisponivel() > 0) {
+                                System.out.println("Digite a quantidade desejada:");
+                                int quantidade = scanner.nextInt();
+
+                                if (quantidade <= jogo.getQuantidadeDisponivel()) {
+                                    carrinhoDeCompras.add(new Jogo(jogo.getNome(), jogo.getPreco(), quantidade));
+                                    jogo.reduzirEstoque(quantidade);
+                                    System.out.println("Jogo adicionado ao carrinho!");
+                                } else {
+                                    System.out.println("Estoque insuficiente para " + quantidade + " unidades de " + jogo.getNome());
+                                }
+                                break;
+                            } else if (jogo.getNome().equalsIgnoreCase(nomeJogo) && jogo.getQuantidadeDisponivel() == 0) {
+                                System.out.println("Estoque esgotado para " + jogo.getNome());
+                                break;
+                            }
+                        }
+                    }
+
+                    System.out.println("Deseja aplicar algum desconto? (Digite 0 se não tiver desconto)");
+                    double desconto = scanner.nextDouble();
+
+                    if (desconto > 5) {
+                        System.out.println("Vai me passar a perna mesmo é?");
+                    }
+
+                    double precoTotal = loja.calcularPrecoTotal(carrinhoDeCompras, desconto);
+
+                    System.out.println("Preço total da compra com desconto: R$ " + precoTotal);
+                    break;
+                case 3:
+                    System.out.println(" ");
+                    System.out.println("*----------------------------------------------------------*");
+                    System.out.println("Obrigado por comprar na Lojinha do japa");
+                    System.out.println(" ");
+                    System.out.println("Até mais!");
+                    System.out.println("*-----------------------------------------------------------*");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+                    break;
+            }
+        }
+    }
+}
