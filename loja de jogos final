@@ -2,12 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// Interface para jogos com desconto
 interface Desconto {
     double aplicarDesconto(double preco);
 }
 
-// Classe base para jogos
 class Jogo {
     private String nome;
     private double preco;
@@ -45,7 +43,7 @@ class Jogo {
     }
 }
 
-// Classe para jogos com desconto
+
 class JogoComDesconto extends Jogo implements Desconto {
     private double desconto;
 
@@ -65,16 +63,13 @@ class JogoComDesconto extends Jogo implements Desconto {
     }
 }
 
-// Classe para jogos premium
 class JogoPremium extends JogoComDesconto {
     public JogoPremium(String nome, double preco, int quantidadeDisponivel, double desconto) {
         super(nome, preco, quantidadeDisponivel, desconto);
     }
 
-    // Adicione métodos específicos para jogos premium, se necessário
 }
 
-// Classe para representar a loja
 class LojaDeJogos {
     public List<Jogo> jogosDisponiveis;
 
@@ -111,7 +106,6 @@ class LojaDeJogos {
     }
 }
 
-// Classe principal para execução
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
